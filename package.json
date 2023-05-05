@@ -12,8 +12,10 @@
     "vite": "^4.3.2"
   },
   "dependencies": {
+    "normalize-wheel": "^1.0.1",
     "ogl": "^0.0.116",
     "sass": "^1.62.1",
-    "three": "^0.152.2"
+    "three": "^0.152.2",
+    "vite-plugin-glsl": "^1.1.2"
   }
 }
