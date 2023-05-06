@@ -1,7 +1,7 @@
 import { Mesh, Program, Texture } from 'ogl';
 
-import fragment from './fragment.glsl';
-import vertex from './vertex.glsl';
+import fragment from './glsl/fragment.glsl';
+import vertex from './glsl/vertex.glsl';
 
 export default class Media {
   constructor({ element, geometry, gl, height, scene, screen, viewport }) {

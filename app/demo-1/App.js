@@ -2,7 +2,7 @@ import { Renderer, Camera, Transform, Plane } from 'ogl';
 import normalizeWheel from 'normalize-wheel';
 
 import Media from './Media';
-import { lerp } from './utils';
+import { lerp } from '../utils';
 
 export default class App {
   constructor() {
