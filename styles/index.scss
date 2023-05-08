@@ -1,27 +1,5 @@
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html {
-  font-size: calc(100vw / 1920 * 10);
-  width: 100%;
-  height: 100%;
-}
-
-body {
-  background: #0c0c0c;
-  color: #fff;
-}
-
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
+@import './base/base';
+@import './base/frame';
 
 @import './demos/demo-1';
 @import './demos/demo-2';
