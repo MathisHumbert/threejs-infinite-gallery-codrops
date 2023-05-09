@@ -21,26 +21,26 @@ body {
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
 
-  &::after {
-    content: ' ';
-    position: fixed;
-    top: -100%;
-    left: -100%;
-    width: 300%;
-    height: 300%;
-    background-image: url('/img/grain.png');
-    background-repeat: repeat;
-    z-index: 3;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    animation: grain 6s steps(10) infinite;
-    will-change: transform;
-  }
+  // &::after {
+  //   content: ' ';
+  //   position: fixed;
+  //   top: -100%;
+  //   left: -100%;
+  //   width: 300%;
+  //   height: 300%;
+  //   background-image: url('/img/grain.png');
+  //   background-repeat: repeat;
+  //   z-index: 3;
+  //   pointer-events: none;
+  //   opacity: 0;
+  //   transition: opacity 0.4s ease;
+  //   animation: grain 6s steps(10) infinite;
+  //   will-change: transform;
+  // }
 
-  .loaded &:after {
-    opacity: 0.06;
-  }
+  // .loaded &:after {
+  //   opacity: 0.06;
+  // }
 }
 
 canvas {

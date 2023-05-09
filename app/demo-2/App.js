@@ -1,8 +1,13 @@
 import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import normalizeWheel from 'normalize-wheel';
 
 import Media from './Media';
 import { lerp } from '../utils';
+import vertex from './glsl/post-vertex.glsl';
+import fragment from './glsl/post-fragment.glsl';
 
 export default class App {
   constructor() {
@@ -17,6 +22,7 @@ export default class App {
     this.createScene();
     this.createCamera();
     this.createRenderer();
+    this.createPost();
 
     this.load();
   }
@@ -72,8 +78,29 @@ export default class App {
       alpha: true,
       antialias: true,
     });
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     document.body.appendChild(this.renderer.domElement);
+  }
+
+  createPost() {
+    this.composer = new EffectComposer(this.renderer);
+    this.renderPass = new RenderPass(this.scene, this.camera);
+    this.composer.addPass(this.renderPass);
+
+    this.customShaderPass = {
+      uniforms: {
+        tDiffuse: { value: null },
+        uStrength: { value: 0 },
+      },
+      vertexShader: vertex,
+      fragmentShader: fragment,
+    };
+
+    this.customPass = new ShaderPass(this.customShaderPass);
+    this.customPass.renderToScreen = true;
+
+    this.composer.addPass(this.customPass);
   }
 
   createGeometry() {
@@ -187,9 +214,12 @@ export default class App {
       );
     }
 
+    this.customPass.uniforms.uStrength.value =
+      ((this.scroll.current - this.scroll.last) / this.screen.width) * 0.5;
+
     this.scroll.last = this.scroll.current;
 
-    this.renderer.render(this.scene, this.camera);
+    this.composer.render();
 
     window.requestAnimationFrame(this.update.bind(this));
   }
