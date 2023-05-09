@@ -1,4 +1,4 @@
-import { Renderer, Camera, Transform, Plane } from 'ogl';
+import { Renderer, Camera, Transform, Plane, TextureLoader } from 'ogl';
 import normalizeWheel from 'normalize-wheel';
 
 import Media from './Media';
@@ -17,6 +17,29 @@ export default class App {
     this.createRenderer();
     this.createCamera();
     this.createScene();
+
+    this.load();
+  }
+
+  load() {
+    const images = [...document.querySelectorAll('.demo-1__gallery img')];
+    const texureUrls = images.map((img) => img.src);
+
+    Promise.all(
+      texureUrls.map((url) => {
+        return new Promise((res) => {
+          const texture = TextureLoader.load(this.gl, { src: url });
+          res(texture);
+        });
+      })
+    ).then((data) => {
+      this.textures = data;
+      document.querySelector('html').classList.add('loaded');
+      this.init();
+    });
+  }
+
+  init() {
     this.createGallery();
 
     this.onResize();
@@ -64,9 +87,10 @@ export default class App {
     ];
 
     this.medias = this.mediasElements.map(
-      (element) =>
+      (element, index) =>
         new Media({
           element,
+          texture: this.textures[index],
           geometry: this.planeGeometry,
           gl: this.gl,
           height: this.galleryHeight,

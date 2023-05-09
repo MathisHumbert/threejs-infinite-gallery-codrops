@@ -11,6 +11,12 @@
   gap: 15px;
   padding: 3rem;
   font-size: 15px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+
+  .loaded & {
+    opacity: 1;
+  }
 }
 
 @media screen and (min-width: 53rem) {

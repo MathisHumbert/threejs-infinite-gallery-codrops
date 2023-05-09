@@ -12,6 +12,7 @@
     "vite": "^4.3.2"
   },
   "dependencies": {
+    "imagesloaded": "^5.0.0",
     "normalize-wheel": "^1.0.1",
     "ogl": "^0.0.116",
     "sass": "^1.62.1",

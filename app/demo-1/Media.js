@@ -1,13 +1,23 @@
-import { Mesh, Program, Texture } from 'ogl';
+import { Mesh, Program } from 'ogl';
 
 import fragment from './glsl/fragment.glsl';
 import vertex from './glsl/vertex.glsl';
 
 export default class Media {
-  constructor({ element, geometry, gl, height, scene, screen, viewport }) {
+  constructor({
+    element,
+    texture,
+    geometry,
+    gl,
+    height,
+    scene,
+    screen,
+    viewport,
+  }) {
     this.element = element;
     this.img = this.element.querySelector('img');
 
+    this.texture = texture;
     this.geometry = geometry;
     this.gl = gl;
     this.height = height;
@@ -23,25 +33,25 @@ export default class Media {
   }
 
   createMesh() {
-    const image = new Image();
-    const texture = new Texture(this.gl);
+    // const image = new Image();
+    // const texture = new Texture(this.gl);
 
-    image.src = this.img.src;
-    image.onload = (_) => {
-      program.uniforms.uImageSizes.value = [
-        image.naturalWidth,
-        image.naturalHeight,
-      ];
-      texture.image = image;
-    };
+    // image.src = this.img.src;
+    // image.onload = (_) => {
+    //   program.uniforms.uImageSizes.value = [
+    //     image.naturalWidth,
+    //     image.naturalHeight,
+    //   ];
+    //   texture.image = image;
+    // };
 
     const program = new Program(this.gl, {
       fragment,
       vertex,
       uniforms: {
-        tMap: { value: texture },
+        tMap: { value: this.texture },
         uPlaneSizes: { value: [0, 0] },
-        uImageSizes: { value: [0, 0] },
+        uImageSizes: { value: [this.img.naturalWidth, this.img.naturalHeight] },
         uViewportSizes: { value: [this.viewport.width, this.viewport.height] },
         uStrength: { value: 0 },
       },

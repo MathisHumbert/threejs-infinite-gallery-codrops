@@ -12,11 +12,35 @@ export default class App {
       last: 0,
       ease: 0.05,
     };
+    this.speed = 2;
 
     this.createScene();
     this.createCamera();
     this.createRenderer();
 
+    this.load();
+  }
+
+  load() {
+    const textureLoader = new THREE.TextureLoader();
+    const images = [...document.querySelectorAll('.demo-2__gallery img')];
+
+    Promise.all(
+      images.map((img) => {
+        return new Promise((res) => {
+          textureLoader.load(img.src, (texture) => {
+            res(texture);
+          });
+        });
+      })
+    ).then((data) => {
+      this.textures = data;
+      document.querySelector('html').classList.add('loaded');
+      this.init();
+    });
+  }
+
+  init() {
     this.createGallery();
 
     this.onResize();
@@ -25,6 +49,7 @@ export default class App {
     this.createMedias();
 
     this.update();
+
     this.addEventListeners();
   }
 
@@ -61,9 +86,10 @@ export default class App {
     ];
 
     this.medias = this.mediasElements.map(
-      (element) =>
+      (element, index) =>
         new Media({
           element,
+          texture: this.textures[index],
           scene: this.scene,
           geometry: this.planeGeometry,
           screen: this.screen,
@@ -115,7 +141,29 @@ export default class App {
     this.scroll.target += speed * 0.5;
   }
 
+  onTouchDown(event) {
+    this.isDown = true;
+
+    this.scroll.position = this.scroll.current;
+    this.touchStart = event.touches ? event.touches[0].clientX : event.clientX;
+  }
+
+  onTouchMove(event) {
+    if (!this.isDown) return;
+
+    const y = event.touches ? event.touches[0].clientX : event.clientX;
+    const distance = (this.touchStart - y) * 2;
+
+    this.scroll.target = this.scroll.position + distance;
+  }
+
+  onTouchUp() {
+    this.isDown = false;
+  }
+
   update() {
+    this.scroll.target += this.speed;
+
     this.scroll.current = lerp(
       this.scroll.current,
       this.scroll.target,
@@ -124,8 +172,10 @@ export default class App {
 
     if (this.scroll.current > this.scroll.last) {
       this.direction = 'right';
+      this.speed = 2;
     } else if (this.scroll.current < this.scroll.last) {
       this.direction = 'left';
+      this.speed = -2;
     }
 
     if (this.medias) {
@@ -149,5 +199,13 @@ export default class App {
 
     window.addEventListener('mousewheel', this.onWheel.bind(this));
     window.addEventListener('wheel', this.onWheel.bind(this));
+
+    window.addEventListener('mousedown', this.onTouchDown.bind(this));
+    window.addEventListener('mousemove', this.onTouchMove.bind(this));
+    window.addEventListener('mouseup', this.onTouchUp.bind(this));
+
+    window.addEventListener('touchstart', this.onTouchDown.bind(this));
+    window.addEventListener('touchmove', this.onTouchMove.bind(this));
+    window.addEventListener('touchend', this.onTouchUp.bind(this));
   }
 }

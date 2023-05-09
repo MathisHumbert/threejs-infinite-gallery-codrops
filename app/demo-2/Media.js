@@ -4,10 +4,19 @@ import vertex from './glsl/vertex.glsl';
 import fragment from './glsl/fragment.glsl';
 
 export default class Media {
-  constructor({ element, scene, geometry, screen, viewport, galleryWidth }) {
+  constructor({
+    element,
+    texture,
+    scene,
+    geometry,
+    screen,
+    viewport,
+    galleryWidth,
+  }) {
     this.element = element;
     this.img = element.querySelector('img');
 
+    this.texture = texture;
     this.scene = scene;
     this.geometry = geometry;
     this.screen = screen;
@@ -21,17 +30,11 @@ export default class Media {
   }
 
   createMesh() {
-    const loader = new THREE.TextureLoader();
-
-    const texture = loader.load(this.img.src, (t) => {
-      return t;
-    });
-
     this.material = new THREE.RawShaderMaterial({
       vertexShader: vertex,
       fragmentShader: fragment,
       uniforms: {
-        uTexture: { value: texture },
+        uTexture: { value: this.texture },
         uPlaneSizes: { value: new THREE.Vector2(0, 0) },
         uImageSizes: {
           value: new THREE.Vector2(
@@ -39,9 +42,13 @@ export default class Media {
             this.img.naturalHeight
           ),
         },
+        uViewportSizes: {
+          value: new THREE.Vector2(this.viewport.width, this.viewport.height),
+        },
+        uStrength: { value: 0 },
       },
+
       transparent: true,
-      // wireframe: true,
     });
 
     this.plane = new THREE.Mesh(this.geometry, this.material);
@@ -90,7 +97,13 @@ export default class Media {
     const { screen, viewport, galleryWidth } = sizes;
 
     if (screen) this.screen = screen;
-    if (viewport) this.viewport = viewport;
+    if (viewport) {
+      this.viewport = viewport;
+      this.material.uniforms.uViewportSizes.value = new THREE.Vector2(
+        this.viewport.width,
+        this.viewport.height
+      );
+    }
     if (galleryWidth) this.galleryWidth = galleryWidth;
 
     this.createBounds();
@@ -98,6 +111,9 @@ export default class Media {
 
   update({ scroll, direction }) {
     this.updateX(scroll.current);
+
+    this.material.uniforms.uStrength.value =
+      ((scroll.current - scroll.last) / this.screen.width) * 5;
 
     const planeOffset = this.plane.scale.x / 2;
     const viewportOffset = this.viewport.width / 2;

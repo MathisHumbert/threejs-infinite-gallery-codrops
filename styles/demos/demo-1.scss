@@ -8,6 +8,31 @@
   z-index: 1;
 }
 
+.demo-1__header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.demo-1__title {
+  font-size: 20rem;
+  font-weight: 800;
+  line-height: 1;
+  font-family: 'moret', serif;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+
+  .loaded & {
+    opacity: 1;
+  }
+}
+
 .demo-1__gallery {
   height: 295rem;
   position: relative;
@@ -193,6 +218,7 @@
     }
   }
 }
+
 .demo-1__gallery__image {
   position: absolute;
   left: 0;
